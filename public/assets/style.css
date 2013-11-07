@@ -1,0 +1,16 @@
+/*Main CSS Stylesheet*/
+
+#content {
+	width:600px;
+	margin:0 auto;
+}
+
+#chat-box {
+	width:450px;
+	height:650px;
+	border: 1px solid gray;
+}
+
+input[type=text] {
+	width:450px;
+}

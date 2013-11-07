@@ -1,0 +1,18 @@
+!!!
+html
+	head
+		title='Real Chat - a real time chat app'
+		link(href='/assets/reset.css', type='text/css', rel='stylesheet')
+		link(href='/assets/style.css', type='text/css', rel='stylesheet')
+		script(src='/chat.js')
+		script(src='/socket.io/socket.io.js')
+
+	body
+		#content
+			#chat-box
+			#controls
+				input#username(placeholder='Enter your desired username')
+				input#join(type='button', value='Join Chat')
+				br
+				input#message(placeholder='Enter your message')
+				input#send(type='button', value='Send Message')
