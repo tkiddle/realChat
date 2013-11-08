@@ -5,10 +5,16 @@
 	margin:0 auto;
 }
 
-#chat-box {
+#chat-box-wrap {
 	width:450px;
-	height:650px;
+	height:400px;
 	border: 1px solid gray;
+}
+
+#chat-box {
+	padding:10px;
+	overflow-y:scroll;
+	height:380px;
 }
 
 input[type=text] {

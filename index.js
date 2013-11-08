@@ -2,7 +2,7 @@
 
 var express = require('express'),
 	app = express(),
-	port = 3700;
+	port = 80;
 
 	//Set the template directory
 	app.set('views', __dirname + '/templates');
@@ -14,11 +14,21 @@ var express = require('express'),
 	app.engine('jade', require('jade').__express)
 
 
+
+
 	app.get('/', function (request, response) {
 
-		response.render('page');
+		response.render('join', {id :  ''});
 	
 	});
+
+	app.get('/chat', function (request, response) {
+
+		response.render('chat');
+	
+	});
+
+
 
 	//Tell express where our front end JS is
 	app.use(express.static(__dirname + '/public'));
@@ -27,12 +37,25 @@ var express = require('express'),
 
 	io.sockets.on('connection', function (socket) {
 
-		socket.emit('message', {'message' : 'Welcome to Real Chat'});
-
 		console.log('connected');
+
+		socket.emit('message', {message : 'Welcome to RandoChat'});
+
+		
+		socket.on('send', function (data) {
+
+			io.sockets.emit('message', data);
+
+		});
+
+		socket.on('join', function (data) {
+
+			io.sockets.emit('join', data);
+
+		});
 
 
 	});
 
-	console.log('Listening on port: ' +  port);
+	console.warn('Listening on port: ' +  port);
 

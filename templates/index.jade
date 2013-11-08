@@ -8,11 +8,5 @@ html
 		script(src='/socket.io/socket.io.js')
 
 	body
-		#content
-			#chat-box
-			#controls
-				input#username(placeholder='Enter your desired username')
-				input#join(type='button', value='Join Chat')
-				br
-				input#message(placeholder='Enter your message')
-				input#send(type='button', value='Send Message')
+		#content			
+			block content
