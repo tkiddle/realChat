@@ -2,7 +2,7 @@
 
 var express = require('express'),
 	app = express(),
-	port = 80;
+	port = 8080;
 
 	//Set the template directory
 	app.set('views', __dirname + '/templates');
@@ -14,18 +14,37 @@ var express = require('express'),
 	app.engine('jade', require('jade').__express)
 
 
-
+	//Use the bodyParse method
+	app.use(express.bodyParser());
 
 	app.get('/', function (request, response) {
 
-		response.render('join', {id :  ''});
+		response.render('join', {title : 'Welcome to RealChat', pageId :  'join'});
 	
 	});
 
-	app.get('/chat', function (request, response) {
+	app.all('/chat', function (request, response) {
 
-		response.render('chat');
-	
+		console.log(request.session);
+
+		if (request.method === 'POST') {
+
+			if (request.body.username.length === 0) {
+
+				response.redirect('/');
+
+			} else {
+
+				response.render('chat', {title : 'Get chatting!', pageId : 'chat'});
+
+			}
+
+		} else {
+
+			response.render('chat', {title : 'Get chatting!', pageId : 'chat'});
+
+		}
+			
 	});
 
 

@@ -1,61 +1,60 @@
 //Chat application front end
 
+REALCHAT.Messaging = function (messagesArray, dialogueBox, messageInput, messageSubmit) {
+
+	var self = this;
+	
+	self.messagesArray = messagesArray,
+	self.dialogueBox = dialogueBox,
+	self.messageInput = messageInput,
+	self.messageSubmit = messageSubmit;
+
+	
+	REALCHAT.config.socket.on('message', function (data) {
+			
+		console.log('Single Message: ' , data.message);
+
+		if (data.message) {
+
+			var messageList = '';
+
+			self.messagesArray.push(data.message);
+
+			for (var i = 0; i < self.messagesArray.length; i++) {
+				messageList += self.messagesArray[i] + '<br />'
+			}
+
+			self.dialogueBox.innerHTML = messageList;
+
+		}		
+		
+
+	});
+	
+
+	self.messageSubmit.onclick = function () {
+
+		var messageValue = self.messageInput.value;
+		
+		REALCHAT.config.socket.emit('send', {message : messageValue});
+
+	}
+
+
+}
+
+
+
+
 window.onload = function () {
 
 	var messages = [],
-		socket = io.connect('http://localhost'),
 		chatBox = document.getElementById('chat-box'),
 		messageInput = document.getElementById('message'),
-		usernameInput = document.getElementById('username'),
-		sendButton = document.getElementById('send'),
-		joinButton = document.getElementById('join');
+		sendButton = document.getElementById('send');
+		
 
-		socket.on('message', function (data) {
-			
-			console.log('Single Message: ' , data.message);
-
-			if (data.message) {
-
-				var messageList = '';
-
-				messages.push(data.message);
-
-				for (var i = 0; i < messages.length; i++) {
-					messageList += messages[i] + '<br />'
-				}
-
-				chatBox.innerHTML = messageList;
-
-			}		
-			
-
-		});
-
-
-		socket.on('join', function (data) {
-
-			console.log(data.user);
-
-		});
-
-		sendButton.onclick = function () {
-
-			var messageValue = messageInput.value;
-			
-			socket.emit('send', {message : messageValue});
-
-		}
-
-		joinButton.onclick = function () {
-
-			var usernameValue = usernameInput.value;
-			alert('usernameValue');
-
-			socket.emit('join', {user : usernameValue});
-
-
-		}
-
-alert(2);
+	var chatMessaging = new REALCHAT.Messaging(messages, chatBox, messageInput, sendButton);
+		
 
 }

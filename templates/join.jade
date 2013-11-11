@@ -1,8 +1,11 @@
 extends index
 
+block head
+	script(src='/join.js')
+
 block content
 
-	form#username-select
-		input#username(placeholder='Enter your desired username')
-		input#join(type='button', value='Join Chat')
+	form#username-select(action='/chat', method='POST')
+		input#username(name='username', placeholder='Enter your desired username')
+		input#join(type='submit', value='Join Chat')
 			
