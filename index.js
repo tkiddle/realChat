@@ -2,7 +2,10 @@
 
 var express = require('express'),
 	app = express(),
-	port = 8080;
+	colors = require('colors');
+	MongoStore = require('connect-mongo')(express),
+	port = 8080,
+	activeUsers = [];
 
 	//Set the template directory
 	app.set('views', __dirname + '/templates');
@@ -16,31 +19,62 @@ var express = require('express'),
 
 	//Use the bodyParse method
 	app.use(express.bodyParser());
+	
+	//Use the cookieParser method
+	app.use(express.cookieParser());
 
+	
+	app.use(express.session({
+
+		secret: 'secretSession',
+		cookie: {
+			maxAge : 1000000
+		},
+		store : new MongoStore ({
+			db : 'realchatsessionstore'
+		})
+
+	}));
+
+
+
+
+	//Routes
 	app.get('/', function (request, response) {
+
+		if (request.session.username !== undefined) {
+
+			response.redirect('/chat');
+
+		}
 
 		response.render('join', {title : 'Welcome to RealChat', pageId :  'join'});
 	
 	});
 
+
 	app.all('/chat', function (request, response) {
 
-		console.log(request.session);
+		if (request.session.username == undefined) {
 
-		if (request.method === 'POST') {
 
-			if (request.body.username.length === 0) {
+			if (request.method === 'POST' && request.body.username !== '') {
 
-				response.redirect('/');
-
-			} else {
+				request.session.username  = request.body.username;
 
 				response.render('chat', {title : 'Get chatting!', pageId : 'chat'});
 
+
+			} else {
+
+				response.redirect('/');
+
 			}
+
 
 		} else {
 
+			
 			response.render('chat', {title : 'Get chatting!', pageId : 'chat'});
 
 		}
@@ -56,10 +90,7 @@ var express = require('express'),
 
 	io.sockets.on('connection', function (socket) {
 
-		console.log('connected');
-
 		socket.emit('message', {message : 'Welcome to RandoChat'});
-
 		
 		socket.on('send', function (data) {
 
@@ -74,7 +105,16 @@ var express = require('express'),
 		});
 
 
+		socket.on('userchange', function () {
+
+			io.sockets.emit('userchange', data);
+
+		});
+
+
 	});
 
-	console.warn('Listening on port: ' +  port);
+
+
+	console.log(('Listening on port: ' +  port).green);
 

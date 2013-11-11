@@ -10,3 +10,7 @@ block content
 	#controls
 		input#message(placeholder='Enter your message')
 		input#send(type='button', value='Send Message')
+
+	#sidebar 
+		each kw in users
+			li= kw
