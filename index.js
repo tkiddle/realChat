@@ -2,7 +2,6 @@
 
 var express = require('express'),
 	app = express(),
-	colors = require('colors');
 	MongoStore = require('connect-mongo')(express),
 	port = 8080,
 	activeUsers = [];
@@ -24,17 +23,7 @@ var express = require('express'),
 	app.use(express.cookieParser());
 
 	
-	app.use(express.session({
-
-		secret: 'secretSession',
-		cookie: {
-			maxAge : 1000000
-		},
-		store : new MongoStore ({
-			db : 'realchatsessionstore'
-		})
-
-	}));
+	var people = {};
 
 
 
@@ -42,7 +31,7 @@ var express = require('express'),
 	//Routes
 	app.get('/', function (request, response) {
 
-		if (request.session.username !== undefined) {
+		if (false) {
 
 			response.redirect('/chat');
 
@@ -55,12 +44,12 @@ var express = require('express'),
 
 	app.all('/chat', function (request, response) {
 
-		if (request.session.username == undefined) {
+		if (true) {
 
 
 			if (request.method === 'POST' && request.body.username !== '') {
 
-				request.session.username  = request.body.username;
+				
 
 				response.render('chat', {title : 'Get chatting!', pageId : 'chat'});
 
@@ -98,11 +87,20 @@ var express = require('express'),
 
 		});
 
-		socket.on('join', function (data) {
 
-			io.sockets.emit('join', data);
+
+		socket.on('join', function (name) {
+
+			people[socket.id] = {'name' : name}
+
+			console.log(people);
+
+			io.sockets.emit('update-user-list', {'people' : people});
+
 
 		});
+
+		
 
 
 		socket.on('userchange', function () {
@@ -116,5 +114,5 @@ var express = require('express'),
 
 
 
-	console.log(('Listening on port: ' +  port).green);
+	console.log(('Listening on port: ' +  port));
 

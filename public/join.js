@@ -9,11 +9,7 @@ REALCHAT.Join = function (usernameInput, joinButton) {
 	self.joinButton =  joinButton;
 
 
-	REALCHAT.config.socket.on('join', function (data) {
-
-		console.log(data.user);
-
-	});
+	
 
 	joinButton.addEventListener('submit', function () {
 
@@ -21,7 +17,7 @@ REALCHAT.Join = function (usernameInput, joinButton) {
 
 			self.userSet('username', self.usernameInput.value);
 
-			REALCHAT.config.socket.emit('join', {user : self.usernameInput.value});
+			REALCHAT.config.socket.emit('join', self.usernameInput.value);
 
 		}
 	

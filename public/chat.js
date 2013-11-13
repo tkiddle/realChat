@@ -41,6 +41,17 @@ REALCHAT.Messaging = function (messagesArray, dialogueBox, messageInput, message
 	}
 
 
+	REALCHAT.config.socket.on('update-user-list', function (data) {
+
+		$.each(data.people, function(i, obj) {
+       		$('#users').append("<li class=\"list-group-item\">" + obj.name + "</li>");   
+       		console.log(obj.name);
+      	});
+
+
+	});
+
+
 }
 
 
