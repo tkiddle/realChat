@@ -12,19 +12,17 @@ REALCHAT.Messaging = function (messagesArray, dialogueBox, messageInput, message
 	
 	REALCHAT.config.socket.on('message', function (data) {
 			
-		console.log('Single Message: ' , data.message);
-
 		if (data.message) {
 
 			var messageList = '';
 
-			self.messagesArray.push(data.message);
-
+			self.messagesArray.push(data);
+			
 			for (var i = 0; i < self.messagesArray.length; i++) {
-				messageList += self.messagesArray[i] + '<br />'
+				messageList += self.messagesArray[i].username + ': ' + self.messagesArray[i].message + '<br />'
 			}
 
-			self.dialogueBox.innerHTML = messageList;
+			self.dialogueBox.innerHTML = (messageList);
 
 		}		
 		
@@ -34,22 +32,12 @@ REALCHAT.Messaging = function (messagesArray, dialogueBox, messageInput, message
 
 	self.messageSubmit.onclick = function () {
 
-		var messageValue = self.messageInput.value;
+		var messageValue = self.messageInput.value,
+			currentUser = localStorage.getItem('username');
 		
-		REALCHAT.config.socket.emit('send', {message : messageValue});
+		REALCHAT.config.socket.emit('send', {message : messageValue, username : currentUser});
 
 	}
-
-
-	REALCHAT.config.socket.on('update-user-list', function (data) {
-
-		$.each(data.people, function(i, obj) {
-       		$('#users').append("<li class=\"list-group-item\">" + obj.name + "</li>");   
-       		console.log(obj.name);
-      	});
-
-
-	});
 
 
 }

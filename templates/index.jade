@@ -2,13 +2,23 @@
 html
 	head
 		title= title
-		link(href='/assets/reset.css', type='text/css', rel='stylesheet')
-		link(href='/assets/style.css', type='text/css', rel='stylesheet')
+
+		meta(name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+
+		link(href='/assets/css/reset.css', type='text/css', rel='stylesheet')
+		link(href='/assets/css/style.css', type='text/css', rel='stylesheet')
+		link(href='/assets/css/bootstrap.min.css', type='text/css', rel='stylesheet')
+		
 		script(src='/socket.io/socket.io.js')
-		script(src='/lib/jquery.min.js')
-		script(src='/global.js')
+		script(src='/assets/js/lib/jquery.min.js')
+		script(src='/assets/js/lib/bootstrap.min.js')
+		script(src='/assets/js/global.js')
+
 		block head
 
 	body
-		#content			
+		.container			
 			block content
+
+	#footer
+		block foot

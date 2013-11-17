@@ -1,0 +1,8 @@
+/*Main CSS Stylesheet*/
+#welcome-box{margin-top:30px;}
+.modal-dialog {
+margin-top:25%;
+}
+.modal-content {
+margin-top:-25%;
+}

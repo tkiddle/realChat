@@ -23,7 +23,8 @@ var express = require('express'),
 	app.use(express.cookieParser());
 
 	
-	var people = {};
+	var people = [],
+		peopleId = {};
 
 
 
@@ -37,7 +38,7 @@ var express = require('express'),
 
 		}
 
-		response.render('join', {title : 'Welcome to RealChat', pageId :  'join'});
+		response.render('join', {title : 'Welcome to RealChat', pageId :  'join', modalPartial: 'modal-join',  modalTitle : 'Choose your desired alias'});
 	
 	});
 
@@ -46,24 +47,17 @@ var express = require('express'),
 
 		if (true) {
 
-
 			if (request.method === 'POST' && request.body.username !== '') {
 
-				
-
 				response.render('chat', {title : 'Get chatting!', pageId : 'chat'});
-
 
 			} else {
 
 				response.redirect('/');
-
 			}
 
+		} else {			
 
-		} else {
-
-			
 			response.render('chat', {title : 'Get chatting!', pageId : 'chat'});
 
 		}
@@ -77,41 +71,49 @@ var express = require('express'),
 
 	var io = require('socket.io').listen(app.listen(port));
 
-	io.sockets.on('connection', function (socket) {
+	io.sockets.on('connection', function (socket) {	
 
+		//Join page
+
+		socket.on('join', function (name) {
+			
+			peopleId[socket.id] = {'name' : name};
+
+			people.push(name);
+
+			socket.user = name;			
+
+		});
+
+
+		socket.on('user-exist', function (name) {
+
+			var userExists = false;
+
+			if(people.indexOf(name) > -1) {
+
+				userExists = true;
+
+			}
+
+			socket.emit('user-validation', userExists);
+
+		});
+
+
+		//Chat room
 		socket.emit('message', {message : 'Welcome to RandoChat'});
 		
 		socket.on('send', function (data) {
 
-			io.sockets.emit('message', data);
+				console.log(socket.user);
 
-		});
-
-
-
-		socket.on('join', function (name) {
-
-			people[socket.id] = {'name' : name}
-
-			console.log(people);
-
-			io.sockets.emit('update-user-list', {'people' : people});
-
-
-		});
-
-		
-
-
-		socket.on('userchange', function () {
-
-			io.sockets.emit('userchange', data);
+				io.sockets.emit('message', data);
 
 		});
 
 
 	});
-
 
 
 	console.log(('Listening on port: ' +  port));
