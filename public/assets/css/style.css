@@ -1,8 +1,9 @@
 /*Main CSS Stylesheet*/
+.highlight{padding: 9px 14px; margin-bottom: 14px; background-color: #f7f7f9; border: 1px solid #e1e1e8; border-radius: 4px;}
+
 #welcome-box{margin-top:30px;}
-.modal-dialog {
-margin-top:25%;
-}
-.modal-content {
-margin-top:-25%;
-}
+#welcome-box a{margin-top:30px;}
+
+/**/
+#message{width:100%; height:200px; margin:25px 0; resize:none;}
+#chat-box{height:500px; margin:20px 0 14px 0; background-color: #fff; overflow-y:scroll;}

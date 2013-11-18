@@ -3,7 +3,7 @@
 var express = require('express'),
 	app = express(),
 	MongoStore = require('connect-mongo')(express),
-	port = 8080,
+	port = 80,
 	activeUsers = [];
 
 	//Set the template directory
@@ -49,7 +49,7 @@ var express = require('express'),
 
 			if (request.method === 'POST' && request.body.username !== '') {
 
-				response.render('chat', {title : 'Get chatting!', pageId : 'chat'});
+				response.render('chat', {title : 'Get chatting!', pageId : 'chat', userList : ['test']});
 
 			} else {
 
@@ -58,7 +58,7 @@ var express = require('express'),
 
 		} else {			
 
-			response.render('chat', {title : 'Get chatting!', pageId : 'chat'});
+			response.render('chat', {title : 'Get chatting!', pageId : 'chat', userList : ['test']});
 
 		}
 			
@@ -82,6 +82,8 @@ var express = require('express'),
 			people.push(name);
 
 			socket.user = name;			
+
+			socket.emit('users-update', people);
 
 		});
 
@@ -111,6 +113,11 @@ var express = require('express'),
 				io.sockets.emit('message', data);
 
 		});
+
+
+		socket.on('users-update', function (people) {
+			socket.emit('render-users', people);
+		});	
 
 
 	});

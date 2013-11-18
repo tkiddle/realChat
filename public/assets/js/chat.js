@@ -9,7 +9,15 @@ REALCHAT.Messaging = function (messagesArray, dialogueBox, messageInput, message
 	self.messageInput = messageInput,
 	self.messageSubmit = messageSubmit;
 
+
+		
 	
+	REALCHAT.config.socket.on('render-users', function (people) {
+
+		console.log(people);
+
+	});
+
 	REALCHAT.config.socket.on('message', function (data) {
 			
 		if (data.message) {
@@ -19,7 +27,7 @@ REALCHAT.Messaging = function (messagesArray, dialogueBox, messageInput, message
 			self.messagesArray.push(data);
 			
 			for (var i = 0; i < self.messagesArray.length; i++) {
-				messageList += self.messagesArray[i].username + ': ' + self.messagesArray[i].message + '<br />'
+				messageList += '<b>' + (self.messagesArray[i].username ? self.messagesArray[i].username : 'Server') + ': </b>' +  self.messagesArray[i].message + '<br />'
 			}
 
 			self.dialogueBox.innerHTML = (messageList);
@@ -28,20 +36,59 @@ REALCHAT.Messaging = function (messagesArray, dialogueBox, messageInput, message
 		
 
 	});
-	
+
 
 	self.messageSubmit.onclick = function () {
-
-		var messageValue = self.messageInput.value,
-			currentUser = localStorage.getItem('username');
-		
-		REALCHAT.config.socket.emit('send', {message : messageValue, username : currentUser});
-
+		self.emitMessage(self.messageInput);
+		self.messageInput.value = '';
 	}
+
+	self.messageInput.addEventListener('keydown', MessageTextOnKeyEnter);
+
+
+
+	function MessageTextOnKeyEnter(e) {
+	    if (e.keyCode == 13) {
+	        if (e.ctrlKey) {
+	            var val = this.value;
+	            if (typeof this.selectionStart == "number" && typeof this.selectionEnd == "number") {
+	                var start = this.selectionStart;
+	                this.value = val.slice(0, start) + "\n" + val.slice(this.selectionEnd);
+	                this.selectionStart = this.selectionEnd = start + 1;
+	                
+	                self.emitMessage(self.messageInput);
+	                self.messageInput.value = '';
+
+
+	            } else if (document.selection && document.selection.createRange) {
+	                this.focus();
+	                var range = document.selection.createRange();
+	                range.text = "\r\n";
+	                range.collapse(false);
+	                range.select();
+
+	                self.emitMessage(self.messageInput);
+	                self.messageInput.value = '';
+
+	            }
+	        }
+	        return false;
+	    }
+	}
+
 
 
 }
 
+
+REALCHAT.Messaging.prototype.emitMessage  = function (messageValue) {
+
+	var messageValue = messageValue.value,
+		currentUser = localStorage.getItem('username');
+		
+		REALCHAT.config.socket.emit('send', {message : messageValue, username : currentUser});
+
+}
 
 
 

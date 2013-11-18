@@ -5,11 +5,15 @@ block head
 
 block content
 
-	#chat-box-wrap
-		#chat-box
-	#controls
-		input#message(placeholder='Enter your message')
-		input#send(type='button', value='Send Message')
+	#row
+		.col-md-8
+			#chat-box-wrap
+				#chat-box.highlight
+			#controls
+				textarea#message.highlight(placeholder='Enter your message')
+				input#send(type='button', class='btn btn-success btn-lg pull-right', value='Send Message')
 
-	#sidebar 
-		ul#users
+		.col-md-4
+			#sidebar 
+				ul#users
+					#{people}
