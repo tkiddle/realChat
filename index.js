@@ -2,8 +2,11 @@
 
 var express = require('express'),
 	app = express(),
-	MongoStore = require('connect-mongo')(express),
-	port = 80,
+	bodyParser = require('body-parser'),
+	cookieParser = require('cookie-parser'),
+	serveStatic = require('serve-static'),
+	morgan  = require('morgan'),
+	port = 8080,
 	activeUsers = [];
 
 	//Set the template directory
@@ -17,17 +20,17 @@ var express = require('express'),
 
 
 	//Use the bodyParse method
-	app.use(express.bodyParser());
+	app.use(bodyParser());
 	
 	//Use the cookieParser method
-	app.use(express.cookieParser());
+	app.use(cookieParser());
+
+	// Log all requests
+	app.use(morgan()); 
 
 	
 	var people = [],
 		peopleId = {};
-
-
-
 
 	//Routes
 	app.get('/', function (request, response) {
@@ -64,30 +67,29 @@ var express = require('express'),
 			
 	});
 
-
-
-	//Tell express where our front end JS is
-	app.use(express.static(__dirname + '/public'));
+	// Tell express where our front end JS is
+	app.use(serveStatic(__dirname + '/public'));
 
 	var io = require('socket.io').listen(app.listen(port));
 
 	io.sockets.on('connection', function (socket) {	
 
-		//Join page
-
+		// Join page
 		socket.on('join', function (name) {
 			
 			peopleId[socket.id] = {'name' : name};
 
-			people.push(name);
+			people.push(peopleId[socket.id].name);
 
-			socket.user = name;			
-
+			// Not currently in use
 			socket.emit('users-update', people);
+
+			socket.user = peopleId[socket.id].name;			
+
 
 		});
 
-
+		// Check if user name is being used
 		socket.on('user-exist', function (name) {
 
 			var userExists = false;
@@ -103,21 +105,14 @@ var express = require('express'),
 		});
 
 
-		//Chat room
+		//Chat room send messages
 		socket.emit('message', {message : 'Welcome to RandoChat'});
 		
 		socket.on('send', function (data) {
 
-				console.log(socket.user);
-
 				io.sockets.emit('message', data);
 
 		});
-
-
-		socket.on('users-update', function (people) {
-			socket.emit('render-users', people);
-		});	
 
 
 	});

@@ -1,6 +1,6 @@
-//Join JS - Handeles users joining the chat application
+// Join JS - Handeles users joining the chat application
 
-//Define the Join class
+// Define the Join class
 REALCHAT.Join = function (usernameInput, joinButton) {
 
 	var self = this;
@@ -9,10 +9,7 @@ REALCHAT.Join = function (usernameInput, joinButton) {
 	self.joinButton =  joinButton;
 
 
-	
-
 	self.joinButton.addEventListener('click', function () {
-
 	
 		self.userExist(self.usernameInput.value);
 
@@ -46,8 +43,7 @@ REALCHAT.Join = function (usernameInput, joinButton) {
 
 }
 
-//Augment the Join class prototype object
-
+// Augment the Join class prototype object
 REALCHAT.Join.prototype.userExist = function (usernameValue) {
 
 	REALCHAT.config.socket.emit('user-exist', usernameValue);
@@ -74,7 +70,7 @@ REALCHAT.Join.prototype.userSet = function (storedUser, storedUserValue) {
 
 
 
-//initialise the app on load.
+// initialise the app on load.
 window.onload = function () {
 
 	var usernameInput = document.getElementById('username'),

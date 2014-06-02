@@ -9,15 +9,6 @@ REALCHAT.Messaging = function (messagesArray, dialogueBox, messageInput, message
 	self.messageInput = messageInput,
 	self.messageSubmit = messageSubmit;
 
-
-		
-	
-	REALCHAT.config.socket.on('render-users', function (people) {
-
-		console.log(people);
-
-	});
-
 	REALCHAT.config.socket.on('message', function (data) {
 			
 		if (data.message) {
@@ -89,7 +80,6 @@ REALCHAT.Messaging.prototype.emitMessage  = function (messageValue) {
 		REALCHAT.config.socket.emit('send', {message : messageValue, username : currentUser});
 
 }
-
 
 
 window.onload = function () {
