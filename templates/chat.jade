@@ -15,7 +15,7 @@ block content
 			img(src="http://demo.tutorialzine.com:1338/img/unnamed.jpg" alt="" class="img-circle user-avatar img-full")
 		div(class="col-md-9")
 			h1
-				| Join chat
+				| Join the conversation
 			form(id="user-join" method="post" action="/chat")
 				div(class="form-group")
 					input(class="form-control input-sm" type="text" name="nickname" value="Tom" placeholder="Choose a nickname" required)
@@ -30,36 +30,35 @@ block content
 			div(id="dialog" class="col-md-12")
 			
 		div(id="message-controls" class="col-md-12")
+
+			<!-- WYSIWYG toolbar-->
+			div(id="editor-toolbar")
+				header
+					ul(Class="commands")
+						li(class="command" data-wysihtml5-command="bold" title="Make text bold (CTRL + B)")
+						li(class="command" data-wysihtml5-command="italic" title="Make text italic (CTRL + I)")
+						li(class="command" data-wysihtml5-command="insertUnorderedList" title="Insert an unordered list")
+						li(class="command" data-wysihtml5-command="insertOrderedList" title="Insert an ordered list")
+						li(class="command" data-wysihtml5-command="createLink" title="Insert a link")
+						li(class="action" data-wysihtml5-command="insertImage" title="Insert an image")
+						li(class="action" data-wysihtml5-action="change_view" title="Show HTML")
+				
+				div(data-wysihtml5-dialog="createLink" style="display: none;")
+					input(data-wysihtml5-dialog-field="href" class="form-control input-sm" value="http://")
+					a(data-wysihtml5-dialog-action="save" class="btn btn-sm btn-success") OK
+					a(data-wysihtml5-dialog-action="cancel" class="btn btn-sm btn-warning") Cancel
+				
+				div(data-wysihtml5-dialog="insertImage" style="display: none;")
+					input(data-wysihtml5-dialog-field="src" class="form-control input-sm" value="http://")
+					a(data-wysihtml5-dialog-action="save" class="btn btn-sm btn-success") OK
+					a(data-wysihtml5-dialog-action="cancel" class="btn btn-sm btn-warning") Cancel
+
+			<!-- WYSIWYG editor-->
 			form(id="message-form" method="post" action="/chat")
 				div(class="form-group")
-					<!-- WYSIWYG toolbar-->
-					div(id="editor-toolbar")
-						header
-							ul.commands
-								li.command(data-wysihtml5-command="bold", title="Make text bold (CTRL + B)")
-								li.command(data-wysihtml5-command="italic", title="Make text italic (CTRL + I)")
-								li.command(data-wysihtml5-command="insertUnorderedList", title="Insert an unordered list")
-								li.command(data-wysihtml5-command="insertOrderedList", title="Insert an ordered list")
-								li.command(data-wysihtml5-command="createLink", title="Insert a link")
-								li.command(data-wysihtml5-command="insertImage", title="Insert an image")
-								li.action(data-wysihtml5-action="change_view", title="Show HTML")
-						div(data-wysihtml5-dialog="createLink", style="display: none;")
-							label
-								| Link:
-								input(data-wysihtml5-dialog-field="href", value="http://")
-							a(data-wysihtml5-dialog-action="save") OK
-							a(data-wysihtml5-dialog-action="cancel") Cancel
-						div(data-wysihtml5-dialog="insertImage", style="display: none;")
-							label
-								| Image:
-								input(data-wysihtml5-dialog-field="src", value="http://")
-							a(data-wysihtml5-dialog-action="save") OK
-							a(data-wysihtml5-dialog-action="cancel") Cancel
-
-					<!-- WYSIWYG editor-->
-					textarea(id="editor" class="form-control input-sm" name="message" placeholder="Write something..." autofocus required)
+					textarea(id="editor" class="form-control input-sm" name="message" placeholder="Write something..." value="")
 				div(class="form-group")
-					button(class="btn btn-md btn-success")
+					button(class="btn btn-lg btn-primary")
 						| Enter
 	
 

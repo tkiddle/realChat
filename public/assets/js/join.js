@@ -1,7 +1,4 @@
-// Join JS - Handeles users joining the chat application
-
-
-// Define the Join class
+// Join contsructor
 REALCHAT.Join = function (form) {
 
 	var self = this; 
@@ -42,7 +39,7 @@ REALCHAT.Join.prototype.formHandler = function (form) {
 
 		e.preventDefault();
 	};
-}
+};
 
 // Socket.io emit handler
 REALCHAT.Join.prototype.emitHandler = function (name, values, callback) {

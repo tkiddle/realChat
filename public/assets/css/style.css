@@ -1,36 +1,44 @@
 /*Main CSS Stylesheet*/
+
+/* Global */
+#chat-app{min-width:620px;}
 .img-full{width:100%;}
-
 .container {margin-bottom:160px;}
-
 .highlight{padding: 9px 14px; margin-bottom: 14px; background-color: #f7f7f9; border: 1px solid #e1e1e8; border-radius: 4px;}
 
-
-/* New Room */
+/* Join form */
 #join, #room-details{margin-top:80px;}
 #join h1{margin-bottom:30px;}
 #join .user-avatar {margin-top:80px;}
 
+/* Chat form & dialog */
 #chat{display:none; margin-top:40px;}
-#dialog {background:#f0f1f3; height:400px; margin:0 0 60px 0; padding:30px 15px; overflow-y:scroll;}
+#dialog {height:400px; margin:0 0 60px 0; padding:30px 15px; overflow-y:scroll;}
 #message-form textarea{height:140px; resize:none;}
 
 #dialog .user-avatar{width: 74px; margin-top: -2px;}
-#dialog .message{position: relative; float:left; width:100%; margin-bottom:96px;}
-#dialog .message-content{position: relative;  max-width: 510px; background-color: #FFF; border-radius: 3px; box-shadow: 0px 3px 3px #E3E4E6; color: #637277; line-height: 1.4; word-wrap: break-word;
-background: #ffffff; min-height: 60px; min-width: 180px; padding: 24px}
+.message{position: relative; float:left; width:100%; margin-bottom:96px;}
+.message-content{position: relative;  max-width: 510px; border-radius: 3px; box-shadow: 0px 3px 3px #E3E4E6; color: #637277; line-height: 1.4; word-wrap: break-word; background: #f7f7f7; min-height: 60px; min-width: 180px; padding: 24px}
 
-#dialog .you .message-content,
-#dialog .you .user-avatar {float:left;}
+.message-content ul li {list-style:disc inside;}
+.message-content ol li {list-style:decimal inside;}
 
-#dialog .you .message-content{margin-left:24px;}
-#dialog .you .nickname{left: 22px; position: absolute; top: 79px;}
+.message-content img {width:100%;} 
 
-#dialog .me .message-content,
-#dialog .me .user-avatar {float:right;}
+.you .message-content,
+.you .user-avatar {float:left;}
 
-#dialog .me .message-content{margin-right:24px;}
-#dialog .me .nickname{right: 22px; position: absolute; top: 79px;}
+.you .message-content{margin-left:24px;}
+.you .nickname{left: 22px; position: absolute; top: 79px;}
+
+.me .message-content,
+.me .user-avatar {float:right;}
+
+.me .message-content{margin-right:24px;}
+.me .nickname{right: 22px; position: absolute; top: 79px;}
+
+/* Editor toolbar */
+#editor-toolbar .btn {margin:12px 6px 0 0;}
 
 
 

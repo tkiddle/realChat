@@ -1,5 +1,4 @@
-//Chat application front end
-
+// Messaging constructor
 REALCHAT.Messaging = function (form) {
 
 	var self = this;
@@ -16,15 +15,20 @@ REALCHAT.Messaging.prototype.newMessage = function (form) {
 	form.onsubmit = function (e) {
 		
 		var $msgEle = $(form).find('textarea'),
-			$msg = $msgEle.val();
+			$msg = $msgEle.val();		
 
-		REALCHAT.config.socket.emit('new-message', $msg);
-
+		if($msg) {
+		
+			REALCHAT.config.socket.emit('new-message', $msg);
+		}
+		
 		e.preventDefault();
+			
 	};
 
 	REALCHAT.config.socket.on('publish-message', function (data) {
 		self.publishMessage(data);
+		$(form)[0].reset();
 	});
 
 };
@@ -50,12 +54,13 @@ REALCHAT.Messaging.prototype.messageTemplate = function (data, msgCount) {
 	var	user = $('#chat').data('user'),
 		msgClass = user.uid === data.uid ? 'me' : 'you';
 		html = '<div class="message ' + msgClass + ' ">',
-		avatarUrl = data.avatar,
+		avatarUrl = data.avatar ? data.avatar : '/assets/images/avatar.jpg',
+		nickname = user.uid === data.uid ? 'You' : data.nickname;
 
 	html += '<img src="' + avatarUrl + '" class="img-circle user-avatar"/>';
 
-	if (!data.joined) {
-		html += '<span class="nickname">' + data.nickname + '</span>';
+	if (!data.action) {
+		html += '<span class="nickname">' + nickname + '</span>';
 	}
 	
 	html += '<div class="message-content">' + data.message + '</div>';

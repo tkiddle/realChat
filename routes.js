@@ -1,32 +1,19 @@
-// This file is required by app.js. It sets up event listeners
-// for the two main URL endpoints of the application - /create and /chat/:id
-// and listens for socket.io messages.
-
-
-// Use the gravatar module, to turn email addresses into avatar images:
+// Require the gravatar module
 var gravatar = require('gravatar');
-
-var user;
 
 module.exports = function (app, io) {
 
 	// Home page
 	app.get('/', function (req, res) {
-		res.render('home');
-	});
-	
-	app.get('/chat', function (req, res) {
 		res.render('chat');
 	});
 
-
-	
-
-	// Create a socket namespace called randoChat
+	// Namespace our sockets
 	var randoChat = io.of('/randoChat');
 
 	randoChat.on('connection', function (socket) {
 
+		// When a user joins
 		socket.on('join', function (data) {
 
 			socket.uid = socket.client.id
@@ -43,22 +30,30 @@ module.exports = function (app, io) {
 
 			
 			var joinMsg = socket.nickname + ' has joined the conversation.';
-			socket.broadcast.emit('publish-message',  {message: joinMsg, uid : socket.uid, nickname: socket.nickname, avatar : socket.avatar, joined : true});
+			socket.broadcast.emit('publish-message',  {message: joinMsg, uid : socket.uid, nickname: socket.nickname, avatar : socket.avatar, action : true});
 			
 
 		});
 
-
+		// When a user sends a message
 		socket.on('new-message', function (data){
-			console.log(socket.uid);
+
 			randoChat.emit('publish-message', {message: data, uid : socket.uid, avatar : socket.avatar, nickname: socket.nickname});
+		
 		});
 
+
+		// When a user leaves the chat
 		socket.on('disconnect', function() {
-			var leavingMsg = socket.nickname + ' has left the conversation.';
-			socket.broadcast.emit('publish-message',  {message: leavingMsg, uid : socket.uid, avatar : socket.avatar,nickname: socket.nickname});
-		});
+			
+			if (socket.nickname) {
+				
+				var leavingMsg = socket.nickname + ' has left the conversation.';
+				socket.broadcast.emit('publish-message',  {message: leavingMsg, uid : socket.uid, avatar : socket.avatar,nickname: socket.nickname, action : true});
+			
+			}
 
+		});
 
 	});
 

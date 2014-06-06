@@ -199,45 +199,24 @@ header {
 [data-wysihtml5-dialog] {
   color: #333;
   font-size: 14px;
-  text-align: left;
-  border-radius: 4px;
-  -ms-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  padding: 5px 10px;
-  background: #FFFBE0;
+  padding: 16px 16px 4px 16px;
+  background: #fff;
   position: absolute;
-  width: 810px;
-  text-align: center;
-  top: 45px;
+  font-size:12px;
+  top: 42px;
+  left: 17px;
+  width: 441px;
 }
 
+[data-wysihtml5-dialog] label {
+  font-weight: normal;
+}
 [data-wysihtml5-dialog] input {
-  color: #333;
-  border: 1px solid #ccc;
-  padding: 3px;
-  width: 300px;
+
 }
 
 [data-wysihtml5-dialog] input:focus {
-  outline: 0;
-  border: 1px solid #666;
-}
-
-[data-wysihtml5-dialog-action] {
-  padding: 4px;
-  color: #fff;
-  cursor: pointer;
-}
-
-[data-wysihtml5-dialog-action="save"] {
-  background: #007200;
-}
-
-[data-wysihtml5-dialog-action="cancel"] {
-  background: #999;
+  outline: none;
 }
 
 section {

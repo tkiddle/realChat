@@ -8265,6 +8265,7 @@ wysihtml5.views.View = Base.extend(
         "html             { height: 100%; }",
         "body             { min-height: 100%; padding: 0; margin: 0; margin-top: -1px; padding-top: 1px; }",
         "._wysihtml5-temp { display: none; }",
+        ".wysihtml5-sandbox img {width: 25%; display: block; clear: both;}"
         wysihtml5.browser.isGecko ?
           "body.placeholder { color: graytext !important; }" : 
           "body.placeholder { color: #a9a9a9 !important; }",
