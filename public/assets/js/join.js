@@ -1,88 +1,71 @@
 // Join JS - Handeles users joining the chat application
 
+
 // Define the Join class
-REALCHAT.Join = function (usernameInput, joinButton) {
+REALCHAT.Join = function (form) {
+
+	var self = this; 
+
+	self.form = form;
+
+	self.formHandler(self.form);
+
+};
+
+// Form Handler needs to be decoupled
+REALCHAT.Join.prototype.formHandler = function (form) {
 
 	var self = this;
 
-	self.usernameInput = usernameInput;
-	self.joinButton =  joinButton;
+	var	nickNameEle = form.elements[0],	
+		emailAddEle = form.elements[1],		
+		submitButton = form.elements[2];	
 
+	form.onsubmit = function (e) {
 
-	self.joinButton.addEventListener('click', function () {
-	
-		self.userExist(self.usernameInput.value);
+		formValues = {
+			nickname : nickNameEle.value,
+			email : emailAddEle.value
+		};
 
-		REALCHAT.config.socket.on('user-validation', function (userExists) {	
-		
-			if (!userExists) {
-
-				REALCHAT.config.socket.emit('join', self.usernameInput.value);
-
-				if(!self.userCheck(self.usernameInput.value)) {
-					
-					self.userSet('username', self.usernameInput.value);
-				
-				}
-
-				$('#username-select').submit();
-
-			}	else {
-
-				alert ('This username is already in use. Please choose another!');
-
-				return false
-				
-			}
-
+		// Add the user to the chat
+		self.emitHandler('join', formValues, function () {
+			$('#join').fadeOut( function () {
+				$('#chat').fadeIn();
+			});
 		});
-		
 
-	});
+		// Store the user data in the dom
+		self.onHandler('user-data', function (data) {
+			$('#chat').data(data);
+		});
 
-
+		e.preventDefault();
+	};
 }
 
-// Augment the Join class prototype object
-REALCHAT.Join.prototype.userExist = function (usernameValue) {
+// Socket.io emit handler
+REALCHAT.Join.prototype.emitHandler = function (name, values, callback) {
 
-	REALCHAT.config.socket.emit('user-exist', usernameValue);
+	REALCHAT.config.socket.emit(name, values);
 
-}
-
-REALCHAT.Join.prototype.userCheck = function (storedUser) {
-
-	if (localStorage.getItem(storedUser) === null) {
-
-		return false;
+	if (typeof callback == 'function') {
+		callback();
 	}
 
-	return true;
+	return;
+};
 
-}
+// Socket.io on handler
+REALCHAT.Join.prototype.onHandler = function (name, callback) {
+	
+	REALCHAT.config.socket.on(name, function (data) {
 
-REALCHAT.Join.prototype.userSet = function (storedUser, storedUserValue) {
+		if (typeof callback == 'function') {
+				callback(data);
+		}
 
-	localStorage.setItem(storedUser, storedUserValue);
-
-}
-
-
-
-
-// initialise the app on load.
-window.onload = function () {
-
-	var usernameInput = document.getElementById('username'),
-		joinButton = document.getElementById('join');
-
-
-	var chatJoin = new REALCHAT.Join(usernameInput, joinButton);
-
-
-}
-
-
-
+	});
+};
 
 	

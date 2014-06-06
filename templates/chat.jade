@@ -1,19 +1,66 @@
 extends index
 
-block head
-	script(src='/assets/js/chat.js')
+block head 
+	link(href="/assets/js/lib/wysihtml5/website/css/editor.css", type="text/css", rel="stylesheet")
+	link(href="/assets/js/lib/wysihtml5/website/css/stylesheet.css", type="text/css", rel="stylesheet")
+	
+	script(src="/assets/js/lib/wysihtml5/parser_rules/advanced.js")
+	script(src="/assets/js/lib/wysihtml5/dist/wysihtml5-0.3.0.js")
+	script(src="/assets/js/chat.js")
+	script(src="/assets/js/join.js")
 
 block content
+	div(id="join" class="col-md-6 col-md-offset-3")
+		div(class="col-md-3")
+			img(src="http://demo.tutorialzine.com:1338/img/unnamed.jpg" alt="" class="img-circle user-avatar img-full")
+		div(class="col-md-9")
+			h1
+				| Join chat
+			form(id="user-join" method="post" action="/chat")
+				div(class="form-group")
+					input(class="form-control input-sm" type="text" name="nickname" value="Tom" placeholder="Choose a nickname" required)
+				div(class="form-group")
+					input(class="form-control input-sm" type="email" name="email"  value="signmeup@lazypixel.co.uk" placeholder="Enter your email address" required)
+				div(class="form-group")
+					button(class="btn btn-md btn-success")
+						| Enter
 
-	.row
-		.col-md-8
-			#chat-box-wrap
-				#chat-box.highlight
-			#controls
-				textarea#message.highlight(placeholder='Enter your message')
-				input#send(type='button', class='btn btn-success btn-lg pull-right', value='Send Message')
+	div(id="chat" class="col-md-10 col-md-offset-1")
+		div(class="col-md-12")
+			div(id="dialog" class="col-md-12")
+			
+		div(id="message-controls" class="col-md-12")
+			form(id="message-form" method="post" action="/chat")
+				div(class="form-group")
+					<!-- WYSIWYG toolbar-->
+					div(id="editor-toolbar")
+						header
+							ul.commands
+								li.command(data-wysihtml5-command="bold", title="Make text bold (CTRL + B)")
+								li.command(data-wysihtml5-command="italic", title="Make text italic (CTRL + I)")
+								li.command(data-wysihtml5-command="insertUnorderedList", title="Insert an unordered list")
+								li.command(data-wysihtml5-command="insertOrderedList", title="Insert an ordered list")
+								li.command(data-wysihtml5-command="createLink", title="Insert a link")
+								li.command(data-wysihtml5-command="insertImage", title="Insert an image")
+								li.action(data-wysihtml5-action="change_view", title="Show HTML")
+						div(data-wysihtml5-dialog="createLink", style="display: none;")
+							label
+								| Link:
+								input(data-wysihtml5-dialog-field="href", value="http://")
+							a(data-wysihtml5-dialog-action="save") OK
+							a(data-wysihtml5-dialog-action="cancel") Cancel
+						div(data-wysihtml5-dialog="insertImage", style="display: none;")
+							label
+								| Image:
+								input(data-wysihtml5-dialog-field="src", value="http://")
+							a(data-wysihtml5-dialog-action="save") OK
+							a(data-wysihtml5-dialog-action="cancel") Cancel
 
-		.col-md-4
-			#sidebar 
-				ul#users
-					
+					<!-- WYSIWYG editor-->
+					textarea(id="editor" class="form-control input-sm" name="message" placeholder="Write something..." autofocus required)
+				div(class="form-group")
+					button(class="btn btn-md btn-success")
+						| Enter
+	
+
+

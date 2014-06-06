@@ -1,96 +1,68 @@
 //Chat application front end
 
-REALCHAT.Messaging = function (messagesArray, dialogueBox, messageInput, messageSubmit) {
+REALCHAT.Messaging = function (form) {
 
 	var self = this;
-	
-	self.messagesArray = messagesArray,
-	self.dialogueBox = dialogueBox,
-	self.messageInput = messageInput,
-	self.messageSubmit = messageSubmit;
 
-	REALCHAT.config.socket.on('message', function (data) {
-			
-		if (data.message) {
+	self.form = form;
 
-			var messageList = '';
+	self.newMessage(self.form);
+};
 
-			self.messagesArray.push(data);
-			
-			for (var i = 0; i < self.messagesArray.length; i++) {
-				messageList += '<b>' + (self.messagesArray[i].username ? self.messagesArray[i].username : 'Server') + ': </b>' +  self.messagesArray[i].message + '<br />'
-			}
+REALCHAT.Messaging.prototype.newMessage = function (form) {
 
-			self.dialogueBox.innerHTML = (messageList);
+	var self = this;
 
-		}		
+	form.onsubmit = function (e) {
 		
+		var $msgEle = $(form).find('textarea'),
+			$msg = $msgEle.val();
 
+		REALCHAT.config.socket.emit('new-message', $msg);
+
+		e.preventDefault();
+	};
+
+	REALCHAT.config.socket.on('publish-message', function (data) {
+		self.publishMessage(data);
 	});
 
+};
 
-	self.messageSubmit.onclick = function () {
-		self.emitMessage(self.messageInput);
-		self.messageInput.value = '';
+REALCHAT.Messaging.prototype.publishMessage = function (data) {
+
+	var self = this;
+
+	var $dialog = $('#dialog'),
+		message = self.messageTemplate(data);
+
+		$(message).appendTo($dialog).hide().fadeIn();
+
+		$("#dialog").animate({ scrollTop: $('#dialog')[0].scrollHeight}, 1000);
+		
+		return;
+};
+
+REALCHAT.Messaging.prototype.messageTemplate = function (data, msgCount) {
+	
+	var self = this;
+
+	var	user = $('#chat').data('user'),
+		msgClass = user.uid === data.uid ? 'me' : 'you';
+		html = '<div class="message ' + msgClass + ' ">',
+		avatarUrl = data.avatar,
+
+	html += '<img src="' + avatarUrl + '" class="img-circle user-avatar"/>';
+
+	if (!data.joined) {
+		html += '<span class="nickname">' + data.nickname + '</span>';
 	}
+	
+	html += '<div class="message-content">' + data.message + '</div>';
+	html += '</div>'
 
-	self.messageInput.addEventListener('keydown', MessageTextOnKeyEnter);
-
-
-
-	function MessageTextOnKeyEnter(e) {
-	    if (e.keyCode == 13) {
-	        if (e.ctrlKey) {
-	            var val = this.value;
-	            if (typeof this.selectionStart == "number" && typeof this.selectionEnd == "number") {
-	                var start = this.selectionStart;
-	                this.value = val.slice(0, start) + "\n" + val.slice(this.selectionEnd);
-	                this.selectionStart = this.selectionEnd = start + 1;
-	                
-	                self.emitMessage(self.messageInput);
-	                self.messageInput.value = '';
-
-
-	            } else if (document.selection && document.selection.createRange) {
-	                this.focus();
-	                var range = document.selection.createRange();
-	                range.text = "\r\n";
-	                range.collapse(false);
-	                range.select();
-
-	                self.emitMessage(self.messageInput);
-	                self.messageInput.value = '';
-
-	            }
-	        }
-	        return false;
-	    }
-	}
+	return html;
+};
 
 
 
-}
-
-
-REALCHAT.Messaging.prototype.emitMessage  = function (messageValue) {
-
-	var messageValue = messageValue.value,
-		currentUser = localStorage.getItem('username');
-		
-		REALCHAT.config.socket.emit('send', {message : messageValue, username : currentUser});
-
-}
-
-
-window.onload = function () {
-
-	var messages = [],
-		chatBox = document.getElementById('chat-box'),
-		messageInput = document.getElementById('message'),
-		sendButton = document.getElementById('send');
-		
-
-	var chatMessaging = new REALCHAT.Messaging(messages, chatBox, messageInput, sendButton);
-		
-
-}

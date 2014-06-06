@@ -6,87 +6,57 @@
 // Use the gravatar module, to turn email addresses into avatar images:
 var gravatar = require('gravatar');
 
-var people = [],
-	activeUsers = [],
-	peopleId = {};
+var user;
 
 module.exports = function (app, io) {
+
+	// Home page
+	app.get('/', function (req, res) {
+		res.render('home');
+	});
 	
-	//Routes
-	app.get('/', function (request, response) {
-
-		if (false) {
-
-			response.redirect('/chat');
-
-		}
-
-		response.render('join', {title : 'Welcome to RealChat', pageId :  'join', modalPartial: 'modal-join',  modalTitle : 'Choose your desired alias'});
-	
+	app.get('/chat', function (req, res) {
+		res.render('chat');
 	});
 
 
-	app.all('/chat', function (request, response) {
+	
 
-		if (true) {
+	// Create a socket namespace called randoChat
+	var randoChat = io.of('/randoChat');
 
-			if (request.method === 'POST' && request.body.username !== '') {
+	randoChat.on('connection', function (socket) {
 
-				response.render('chat', {title : 'Get chatting!', pageId : 'chat', userList : ['test']});
+		socket.on('join', function (data) {
 
-			} else {
+			socket.uid = socket.client.id
+			socket.email = data.email;
+			socket.nickname = data.nickname;
+			socket.avatar = gravatar.url(data.email, {s: '140', r: 'x', d: 'mm'});
 
-				response.redirect('/');
-			}
+			socket.emit('user-data', {user : {
+				uid : socket.uid,
+				email : socket.email,
+				avatar : socket.avatar,	
+				nickname : socket.nickname
+			}});
 
-		} else {			
-
-			response.render('chat', {title : 'Get chatting!', pageId : 'chat', userList : ['test']});
-
-		}
 			
-	});
-
-	io.sockets.on('connection', function (socket) {	
-
-		// Join page
-		socket.on('join', function (name) {
-		
-			peopleId[socket.id] = {'name' : name};
-
-			people.push(peopleId[socket.id].name);
-
-			// Not currently in use
-			socket.emit('users-update', people);
-
-			socket.user = peopleId[socket.id].name;			
-
-
-		});
-
-		// Check if user name is being used
-		socket.on('user-exist', function (name) {
-
-			var userExists = false;
-
-			if(people.indexOf(name) > -1) {
-
-				userExists = true;
-
-			}
-
-			socket.emit('user-validation', userExists);
+			var joinMsg = socket.nickname + ' has joined the conversation.';
+			socket.broadcast.emit('publish-message',  {message: joinMsg, uid : socket.uid, nickname: socket.nickname, avatar : socket.avatar, joined : true});
+			
 
 		});
 
 
-		//Chat room send messages
-		socket.emit('message', {message : 'Welcome to RandoChat'});
-		
-		socket.on('send', function (data) {
+		socket.on('new-message', function (data){
+			console.log(socket.uid);
+			randoChat.emit('publish-message', {message: data, uid : socket.uid, avatar : socket.avatar, nickname: socket.nickname});
+		});
 
-				io.sockets.emit('message', data);
-
+		socket.on('disconnect', function() {
+			var leavingMsg = socket.nickname + ' has left the conversation.';
+			socket.broadcast.emit('publish-message',  {message: leavingMsg, uid : socket.uid, avatar : socket.avatar,nickname: socket.nickname});
 		});
 
 
