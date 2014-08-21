@@ -1,21 +1,24 @@
-realChat
-========
+Real Chat
+=========
 
 A real time chat application using Node, Express, Jade and Socket IO. The public JavaScript adheres to the constructor pattern for structure and modularisation.
 
-Features:
+Features
+--------
 
 - User join & leave messages
 - Gravatar for user avatars
 - WYSIWYG editor for messages
 
-Future features:
+Coming Soon
+---------------
 
 - Private messages
 - Multiple chat rooms
 - Socket connections stored in express session
 
-Install instructions:
+Install instructions
+--------------------
 
 - Run NPM install
 - node index.js
